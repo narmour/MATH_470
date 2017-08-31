@@ -1,4 +1,4 @@
-
+# Changing timespan to 200 gives you a good visualization of the fixed points
 # if perc = 0, hunt_rate is trated as removing hunt_rate bobcats
 # if perc = 1, hunt_rate is trated as percentage of pop to add/subtract
 model_pop = function(start_pop,growth_rate,timespan,hunt_rate=0,perc=0){
@@ -57,7 +57,7 @@ create_management_strat_graphs = function(){
     comb = c(hunt_1,hunt_5,hunt_1_perc,hunt_5_perc)
     
     #plot the data
-    plot(1:25,hunt_1,type="l",col="blue",ylim=c(min(comb),max(c(comb))))
+    plot(1:25,hunt_1,type="l",col="blue",ylim=c(min(comb),max(comb)))
     lines(hunt_1_perc,col="red")
     lines(hunt_5,col="green")
     lines(hunt_5_perc,col="yellow")
@@ -65,4 +65,20 @@ create_management_strat_graphs = function(){
 
 }
 
+create_worst_management_strat_graph = function(){
+    worst_rate = -0.045
+    start_pop = 100
+    timespan = 25 # 25 iterations
+    hunt_3 = model_pop(start_pop, worst_rate, timespan, hunt_rate=3)
+    hunt_10 = model_pop(start_pop, worst_rate, timespan, hunt_rate=10)
+    hunt_1_perc = model_pop(start_pop, worst_rate, timespan, hunt_rate=1, perc=1)
+    hunt_5_perc = model_pop(start_pop, worst_rate, timespan, hunt_rate=5, perc=1)
+    comb = c(hunt_3, hunt_10, hunt_1_perc, hunt_5_perc)
 
+    #plot the data
+    plot(1:timespan, hunt_3, type="l", col="blue", ylim=c(min(comb), max(comb)))
+    lines(hunt_10, col="red")
+    lines(hunt_1_perc, col="green")
+    lines(hunt_5_perc, col="orange")
+    legend("bottomleft", c("Add 3/yr", "Add 10/yr", "Add 1%/yr", "Add 5%/yr"), lty=c(1,1), lwd=c(2,2),col=c("blue","red","green","orange"))
+}
