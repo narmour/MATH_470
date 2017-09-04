@@ -25,6 +25,38 @@ model_pop = function(pop,growth_rate,management_strat,t){
     }
 }
 
+# tries to find management_strat such that using growth_rate,
+# we converge to fixed_point
+spoof = function(fixed_point,growth_rate){
+    x = lapply(seq(0,50,1),function(whole_bobcat){
+          do.call("rbind",lapply(seq(0,50,.1),function(percentage_pop){
+                  # add whole sub perc
+                  p1 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop+whole_bobcat) - (pop * percentage_pop/100))},25),n=1) - fixed_point),whole_bobcat,-percentage_pop)
+                  # add whole add  perc
+                  p2 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop+whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point),whole_bobcat,percentage_pop)
+                  # sub whole sub perc
+                  p3 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop-whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point),-whole_bobcat,-percentage_pop)
+                  # sub whole add perc
+                  p4 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop-whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point) ,-whole_bobcat,percentage_pop)
+                  #print(p1)
+                  #return(min(abs(data.frame(matrix(c(p1,p2,p3,p4),ncol=3,byrow=TRUE))$X1 - fixed_point)))
+                  df = data.frame(matrix(c(p1,p2,p3,p4),ncol=3,byrow=TRUE))
+                  #return(df[df$X1==min(df$X1),])
+
+            }))
+    })
+
+
+
+    final = do.call("rbind",x)
+    final[final$X1 == min(final$X1),]
+
+
+
+}
+
+
+
 create_population_graphs = function(){
     # given values
     best_rate = 0.01676
@@ -90,17 +122,28 @@ worst_pop_management_strat_graphs = function(){
     legend("bottomleft",c("add 3/yr","add 1%/yr","add 10/yr","add 5%/yr"),lty=c(1,1),lwd=c(2,2),col=c("blue","red","green","yellow"))
 }
 
+
+
+test_func = function(){
+   worst_rate = -0.045
+   model_pop(100,worst_rate,test_strat,50)
+}
+
 # MANAGEMENT STRATEGIES
 no_management = function(pop){return(pop)}
 best_stable_200 = function(pop){return((pop + 40) - (pop * .21676))}
 hunt_1 = function(pop){ return(pop-1)}
 hunt_5 = function(pop){ return(pop-5)}
+hunt_2 = function(pop){ return(pop-2)}
 hunt_1_perc = function(pop){return(pop - (pop * .01))}
 hunt_5_perc = function(pop){return(pop - (pop * .05))}
 add_3 = function(pop){return(pop+3)}
 add_10 = function(pop){return(pop+10)}
 add_1_perc = function(pop){return(pop + (pop *.01))}
 add_5_perc = function(pop){return(pop + (pop *.05))}
+
+
+test_strat = function(pop){return(pop + 16 - (pop* .28))}
 
 
 
