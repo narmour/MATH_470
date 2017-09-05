@@ -4,7 +4,7 @@ model_pop = function(pop,growth_rate,management_strat,t){
         return(c())
     }
     else{
-        return(c(pop,model_pop(do.call(management_strat,list(pop * (1+growth_rate))),growth_rate,management_strat,t-1)))
+        return(c(pop,model_pop(do.call(management_strat,list(pop,growth_rate)),growth_rate,management_strat,t-1)))
     }
 }
 
@@ -101,13 +101,17 @@ worst_pop_management_strat_graphs = function(){
 
 test_func = function(){
    worst_rate = -0.045
+   best_rate = 0.01676
    #model_pop(100,worst_rate,test_strat,50)
-   model_pop(100,worst_rate,worst_cond_50,50)
+   #model_pop(100,worst_rate,worst_cond_50,50)
+   model_pop(100,best_rate,best_stable_200,100)
+
 }
 
 # MANAGEMENT STRATEGIES
 no_management = function(pop){return(pop)}
-best_stable_200 = function(pop){return((pop + 40) - (pop * .21676))}
+best_stable_200 = function(pop,gr){return(pop *(1+gr) + (40) - (pop * .21676))}
+#best_stable_200 = function(pop){return((pop + 91) - (pop * .464))}
 hunt_1 = function(pop){ return(pop-1)}
 hunt_5 = function(pop){ return(pop-5)}
 hunt_2 = function(pop){ return(pop-2)}
