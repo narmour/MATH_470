@@ -1,0 +1,26 @@
+1. B(N) = B(N-1) + (-.045 * B(N-1)) + 3
+
+2.
+#Given the following R functions 
+model_pop = function(pop,growth_rate,management_strat,t){
+    if(t == 0){
+        return(c())
+    }
+    else{
+        return(c(pop,model_pop(do.call(management_strat,list(pop * (1+growth_rate))),growth_rate,management_strat,t-1)))
+    }
+}
+add_3 = function(pop){return(pop+3)}
+
+The change in a population of bobcats starting at 100 over the course of 1 year under the worst conditions with 3 bobcat
+added per year and a -.045 growth rate is described as model_pop(100,-.045,add_3,2)
+
+
+
+
+
+
+4. B(N) = B(N-1) + (B(N-1) * .01676) + 40  - (B(N-1) * .4) 
+
+5. I tried to find a fixed point at 50 using the worst conditions growth rate. Using the equation xbar = a/-r with xbar =50 and r = -.04500
+I get 50 = a/-.04500   aa

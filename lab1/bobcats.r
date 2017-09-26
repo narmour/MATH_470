@@ -8,19 +8,25 @@ model_pop = function(pop,growth_rate,management_strat,t){
     }
 }
 
+
+
+
+
+
+
 # tries to find management_strat such that using growth_rate,
 # we converge to fixed_point
 spoof = function(fixed_point,growth_rate){
     x = lapply(seq(0,100,1),function(whole_bobcat){
           do.call("rbind",lapply(seq(0,100,.1),function(percentage_pop){
                   # add whole sub perc
-                  p1 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop+whole_bobcat) - (pop * percentage_pop/100))},25),n=1) - fixed_point),whole_bobcat,-percentage_pop)
+                  p1 = c(abs(tail(model_pop(100,growth_rate,function(pop,gr){return((pop* (1+gr) + whole_bobcat) - ( pop* percentage_pop/100))},25),n=1) - fixed_point),whole_bobcat,-percentage_pop)
                   # add whole add  perc
-                  p2 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop+whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point),whole_bobcat,percentage_pop)
+                  p2 = c(abs(tail(model_pop(100,growth_rate,function(pop,gr){return((pop*(1+gr) +whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point),whole_bobcat,percentage_pop)
                   # sub whole sub perc
-                  p3 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop-whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point),-whole_bobcat,-percentage_pop)
+                  p3 = c(abs(tail(model_pop(100,growth_rate,function(pop,gr){return((pop*(1+gr) -whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point),-whole_bobcat,-percentage_pop)
                   # sub whole add perc
-                  p4 = c(abs(tail(model_pop(100,growth_rate,function(pop){return((pop-whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point) ,-whole_bobcat,percentage_pop)
+                  p4 = c(abs(tail(model_pop(100,growth_rate,function(pop,gr){return((pop*(1+gr) -whole_bobcat) - (pop * percentage_pop/100))},25),n=1)-fixed_point) ,-whole_bobcat,percentage_pop)
                   return(data.frame(matrix(c(p1,p2,p3,p4),ncol=3,byrow=TRUE)))
             }))
     })
@@ -110,8 +116,8 @@ test_func = function(){
 
 # MANAGEMENT STRATEGIES
 no_management = function(pop){return(pop)}
-best_stable_200 = function(pop,gr){return(pop *(1+gr) + (40) - (pop * .21676))}
-#best_stable_200 = function(pop){return((pop + 91) - (pop * .464))}
+#best_stable_200 = function(pop,gr){return(pop *(1+gr) + (40) - (pop * .21676))}
+best_stable_200 = function(pop,gr){return(pop * (1+gr)+  36 - (pop * .196))}
 hunt_1 = function(pop){ return(pop-1)}
 hunt_5 = function(pop){ return(pop-5)}
 hunt_2 = function(pop){ return(pop-2)}
